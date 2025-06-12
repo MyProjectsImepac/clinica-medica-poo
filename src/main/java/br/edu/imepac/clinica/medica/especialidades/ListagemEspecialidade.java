@@ -50,6 +50,7 @@ public class ListagemEspecialidade extends javax.swing.JFrame {
                 return false; // impede edição de todas as células
             }
         };
+        especialidadesTable.setModel(modelo);
     }
 
     private void carregarDadosNaTabela() {
@@ -58,7 +59,6 @@ public class ListagemEspecialidade extends javax.swing.JFrame {
             Object[] linha = {e.getId(), e.getNome()};
             modelo.addRow(linha);
         }
-        especialidadesTable.setModel(modelo);
     }
 
     private void carregarListaEspecialidades() {
@@ -159,7 +159,7 @@ public class ListagemEspecialidade extends javax.swing.JFrame {
     }//GEN-LAST:event_excluirButtonActionPerformed
 
     private void excluirEspecialidade(int linhaSelecionada) {
-         try {
+        try {
             this.especialidadeDao.deletar(itemsEspecialidades.get(linhaSelecionada).getId());
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar os dados!");
