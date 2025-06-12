@@ -1,4 +1,4 @@
-create dabase clinica_medica;
+create database clinica_medica;
 use clinica_medica;
 
 DROP TABLE IF EXISTS `especialidade`;
