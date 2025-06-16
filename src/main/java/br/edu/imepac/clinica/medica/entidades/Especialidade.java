@@ -1,6 +1,8 @@
 package br.edu.imepac.clinica.medica.entidades;
 
 
+import java.util.Objects;
+
 public class Especialidade {
     private int id;
     private String nome;
@@ -20,5 +22,23 @@ public class Especialidade {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Especialidade that = (Especialidade) o;
+        return id == that.id && Objects.equals(nome, that.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome);
     }
 }

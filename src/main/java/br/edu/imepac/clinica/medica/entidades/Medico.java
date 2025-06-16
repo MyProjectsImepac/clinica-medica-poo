@@ -5,6 +5,7 @@ public class Medico {
     private String nome;
     private String crm;
     private Especialidade especialidade;
+    private int especialidadeId;
 
     // Getters e Setters
     public int getId() {
@@ -37,5 +38,13 @@ public class Medico {
 
     public void setEspecialidade(Especialidade especialidade) {
         this.especialidade = especialidade;
+    }
+
+    public int getEspecialidadeId() {
+        return especialidadeId;
+    }
+
+    public void setEspecialidadeId(int especialidadeId) {
+        this.especialidadeId = especialidadeId;
     }
 }

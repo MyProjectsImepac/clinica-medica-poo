@@ -1,6 +1,5 @@
 package br.edu.imepac.clinica.medica.daos;
 
-import br.edu.imepac.clinica.medica.entidades.Especialidade;
 import br.edu.imepac.clinica.medica.entidades.Medico;
 
 import java.sql.*;
@@ -28,8 +27,7 @@ public class MedicoDao {
     }
 
     public Medico buscarPorId(int id) throws SQLException {
-        String sql = "SELECT m.id, m.nome, m.crm, e.id AS especialidade_id, e.nome AS especialidade_nome " +
-                     "FROM medico m JOIN especialidade e ON m.especialidade_id = e.id WHERE m.id = ?";
+        String sql = "SELECT * FROM medico WHERE id = ?";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
@@ -39,20 +37,14 @@ public class MedicoDao {
             m.setId(rs.getInt("id"));
             m.setNome(rs.getString("nome"));
             m.setCrm(rs.getString("crm"));
-
-            Especialidade e = new Especialidade();
-            e.setId(rs.getInt("especialidade_id"));
-            e.setNome(rs.getString("especialidade_nome"));
-            m.setEspecialidade(e);
-
+            m.setEspecialidadeId(rs.getInt("especialidade_id"));
             return m;
         }
         return null;
     }
 
     public List<Medico> listarTodos() throws SQLException {
-        String sql = "SELECT m.id, m.nome, m.crm, e.id AS especialidade_id, e.nome AS especialidade_nome " +
-                     "FROM medico m JOIN especialidade e ON m.especialidade_id = e.id";
+        String sql = "SELECT * FROM medico";
         PreparedStatement stmt = connection.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();
 
@@ -62,12 +54,7 @@ public class MedicoDao {
             m.setId(rs.getInt("id"));
             m.setNome(rs.getString("nome"));
             m.setCrm(rs.getString("crm"));
-
-            Especialidade e = new Especialidade();
-            e.setId(rs.getInt("especialidade_id"));
-            e.setNome(rs.getString("especialidade_nome"));
-            m.setEspecialidade(e);
-
+            m.setEspecialidadeId(rs.getInt("especialidade_id"));
             lista.add(m);
         }
         return lista;

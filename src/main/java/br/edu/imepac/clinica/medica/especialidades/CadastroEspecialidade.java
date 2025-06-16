@@ -47,6 +47,11 @@ public class CadastroEspecialidade extends javax.swing.JFrame {
         });
 
         fecharButton.setText("Fechar");
+        fecharButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fecharButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,7 +90,6 @@ public class CadastroEspecialidade extends javax.swing.JFrame {
     private void salvarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarButtonActionPerformed
         boolean isValid = validarDadosObrigatorios();
         if (isValid == true) {
-            //armazenar no banco de dados
             Especialidade especialidade = new Especialidade();
             especialidade.setNome(nomeText.getText());
             
@@ -97,14 +101,16 @@ public class CadastroEspecialidade extends javax.swing.JFrame {
                         this,
                         "Banco de dados indisponível!");
             }
-            //Retornar o status da operação para o usuario
             JOptionPane.showMessageDialog(
                     this,
                     "Especialidade cadastrada com sucesso!");
-            //limpar o formulario
             limparForm();
         }
     }//GEN-LAST:event_salvarButtonActionPerformed
+
+    private void fecharButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fecharButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_fecharButtonActionPerformed
     
     private void limparForm() {
         nomeText.setText("");
@@ -117,7 +123,8 @@ public class CadastroEspecialidade extends javax.swing.JFrame {
         if (nomeText.getText().isBlank()) {
             JOptionPane.showMessageDialog(
                     this,
-                    "O campo nome é obrigatório!");
+                    "O campo nome é obrigatório!"
+            );
             return false;
         }
         return true;

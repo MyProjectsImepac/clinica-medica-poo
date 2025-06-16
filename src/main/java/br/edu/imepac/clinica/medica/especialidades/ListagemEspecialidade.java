@@ -6,58 +6,53 @@ package br.edu.imepac.clinica.medica.especialidades;
 
 import br.edu.imepac.clinica.medica.daos.EspecialidadeDao;
 import br.edu.imepac.clinica.medica.entidades.Especialidade;
-import java.sql.SQLException;
+
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author ehf_v
- */
 public class ListagemEspecialidade extends javax.swing.JFrame {
 
     private List<Especialidade> itemsEspecialidades;
     private EspecialidadeDao especialidadeDao;
-
-    private DefaultTableModel modelo;
+    private DefaultTableModel defaultTableModel;
 
     /**
      * Creates new form ListagemEspecialidade
      */
     public ListagemEspecialidade() {
         initComponents();
-        inicializarTabela();
-        inicializarespecialidadeDao();
+        inicializarColunasNaTabela();
+        inicializarEspecialidadeDao();
         carregarListaEspecialidades();
-        carregarDadosNaTabela();
+        exibirListaEspecialidadeNaTabela();
     }
 
-    private void inicializarespecialidadeDao() {
+    private void inicializarEspecialidadeDao() {
         try {
             this.especialidadeDao = new EspecialidadeDao();
         } catch (Exception exception) {
-            JOptionPane.showMessageDialog(null, "Erro ao carregar os dados!");
+            JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados!");
             dispose();
         }
     }
 
-    private void inicializarTabela() {
+    private void inicializarColunasNaTabela() {
         String[] colunas = {"ID", "Nome"};
-        this.modelo = new DefaultTableModel(colunas, 0) {
+        this.defaultTableModel = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // impede edição de todas as células
             }
         };
-        especialidadesTable.setModel(modelo);
+        especialidadesTable.setModel(defaultTableModel);
     }
 
-    private void carregarDadosNaTabela() {
-        modelo.setRowCount(0); // limpa as linhas existentes
+    private void exibirListaEspecialidadeNaTabela() {
+        defaultTableModel.setRowCount(0); // limpa as linhas existentes
         for (Especialidade e : itemsEspecialidades) {
             Object[] linha = {e.getId(), e.getNome()};
-            modelo.addRow(linha);
+            defaultTableModel.addRow(linha);
         }
     }
 
@@ -86,19 +81,16 @@ public class ListagemEspecialidade extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        especialidadesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Id", "Nome"
-            }
-        ));
         especialidadesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         especialidadesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(especialidadesTable);
 
         editarButton.setText("Editar");
+        editarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editarButtonActionPerformed(evt);
+            }
+        });
 
         excluirButton.setText("Excluir");
         excluirButton.addActionListener(new java.awt.event.ActionListener() {
@@ -133,7 +125,6 @@ public class ListagemEspecialidade extends javax.swing.JFrame {
                 .addComponent(excluirButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -147,20 +138,40 @@ public class ListagemEspecialidade extends javax.swing.JFrame {
                     JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                excluirEspecialidade(linhaSelecionada);
+                int id = (int) especialidadesTable.getModel().getValueAt(linhaSelecionada, 0);
+                excluirEspecialidadeNoBanco(id);
                 itemsEspecialidades.remove(linhaSelecionada);
-                especialidadesTable.remove(linhaSelecionada);
-                this.carregarDadosNaTabela();
+                this.exibirListaEspecialidadeNaTabela();
             }
         } else {
             JOptionPane.showMessageDialog(this, "Selecione uma linha para excluir.");
         }
-
     }//GEN-LAST:event_excluirButtonActionPerformed
 
-    private void excluirEspecialidade(int linhaSelecionada) {
+    private void editarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarButtonActionPerformed
+        int linhaSelecionada = especialidadesTable.getSelectedRow();
+
+        if (linhaSelecionada != -1) {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Tem certeza que deseja excluir esta especialidade?",
+                    "Confirmação",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION) {
+                int id = (int) especialidadesTable.getModel().getValueAt(linhaSelecionada, 0);
+                EditarEspecialidade editarEspecialidade = new EditarEspecialidade(id);
+                editarEspecialidade.pack();
+                editarEspecialidade.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecione uma linha para excluir.");
+            }
+        }
+    }//GEN-LAST:event_editarButtonActionPerformed
+
+    private void excluirEspecialidadeNoBanco(int id) {
         try {
-            this.especialidadeDao.deletar(itemsEspecialidades.get(linhaSelecionada).getId());
+            this.especialidadeDao.deletar(id);
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar os dados!");
             dispose();
